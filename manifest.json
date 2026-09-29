@@ -1,0 +1,24 @@
+{
+  "name": "VPN Roblox",
+  "short_name": "VPN Roblox",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#020b08",
+  "theme_color": "#020b08",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "robux.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "robux.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,73 +1,257 @@
-const sendBtn = document.getElementById('sendBtn');
-const resendBtn = document.getElementById('resendBtn');
-const section1 = document.getElementById('section1');
-const section2 = document.getElementById('section2');
-const amountInput = document.getElementById('amount');
-const displayAmount = document.getElementById('displayAmount');
-const spinner = document.getElementById('spinner');
+const usernameInput = document.getElementById("username");
 
-sendBtn.addEventListener('click', () => {
-  const amount = amountInput.value.trim();
+const generateBtn = document.getElementById("generateBtn");
 
-  if (amount === "" || isNaN(amount) || amount <= 0) {
-    alert("Please enter a valid amount!");
-    return;
-  }
+const loadingPanel = document.getElementById("loadingPanel");
+const resultPanel = document.getElementById("resultPanel");
 
-  sendBtn.textContent = "Sending...";
-  sendBtn.disabled = true;
-  spinner.style.display = "block";
+const progressBar = document.getElementById("progressBar");
+const progressPercent = document.getElementById("progressPercent");
 
-  setTimeout(() => {
-    spinner.style.display = "none";
-    section1.classList.remove('active');
-    section2.classList.add('active');
-    displayAmount.textContent = amount;
-    launchConfetti();
-  }, 2500);
+const loadingTitle = document.getElementById("loadingTitle");
+const loadingText = document.getElementById("loadingText");
+
+const selectedAmount = document.getElementById("selectedAmount");
+
+const resultUsername = document.getElementById("resultUsername");
+const resultAmount = document.getElementById("resultAmount");
+
+const resetBtn = document.getElementById("resetBtn");
+
+const amountButtons = document.querySelectorAll(".amount-btn");
+
+let currentAmount = "10,000";
+
+
+// ============================
+// SELECT AMOUNT
+// ============================
+
+amountButtons.forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        amountButtons.forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+        currentAmount = button.dataset.amount;
+
+        selectedAmount.textContent = currentAmount;
+
+    });
+
 });
 
-resendBtn.addEventListener('click', () => {
-  section2.classList.remove('active');
-  section1.classList.add('active');
-  sendBtn.textContent = "Send";
-  sendBtn.disabled = false;
-  spinner.style.display = "none";
-  amountInput.value = "";
-  document.getElementById('userId').value = "";
-  clearEffects();
+
+// ============================
+// GENERATE
+// ============================
+
+generateBtn.addEventListener("click", () => {
+
+    const username = usernameInput.value.trim();
+
+    if (!username) {
+
+        usernameInput.focus();
+
+        usernameInput.parentElement.style.borderColor = "#ff3bd4";
+
+        setTimeout(() => {
+            usernameInput.parentElement.style.borderColor = "";
+        }, 1000);
+
+        return;
+    }
+
+    if (username.length < 3) {
+
+        usernameInput.focus();
+
+        usernameInput.parentElement.style.borderColor = "#ff3bd4";
+
+        setTimeout(() => {
+            usernameInput.parentElement.style.borderColor = "";
+        }, 1000);
+
+        return;
+    }
+
+    startGeneration(username);
+
 });
 
-function launchConfetti() {
-  for (let i = 0; i < 100; i++) {
-    const confetti = document.createElement('div');
-    confetti.classList.add('confetti');
-    confetti.style.left = Math.random() * 100 + 'vw';
-    confetti.style.background = randomColor();
-    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
-    document.body.appendChild(confetti);
-    setTimeout(() => confetti.remove(), 3000);
-  }
+
+// ============================
+// GENERATION SIMULATION
+// ============================
+
+function startGeneration(username) {
+
+    document.querySelector(".generator-card").classList.add("hidden");
+
+    resultPanel.classList.add("hidden");
+
+    loadingPanel.classList.remove("hidden");
+
+    progressBar.style.width = "0%";
+    progressPercent.textContent = "0%";
+
+    let progress = 0;
+
+    const stages = [
+        {
+            percent: 15,
+            title: "CONNECTING...",
+            text: "Establishing secure VPN connection"
+        },
+        {
+            percent: 35,
+            title: "VERIFYING...",
+            text: "Checking generator session"
+        },
+        {
+            percent: 55,
+            title: "PROCESSING...",
+            text: "Preparing generation request"
+        },
+        {
+            percent: 75,
+            title: "GENERATING...",
+            text: "Creating simulated reward"
+        },
+        {
+            percent: 90,
+            title: "FINALIZING...",
+            text: "Finishing secure session"
+        }
+    ];
+
+    let stageIndex = 0;
+
+    const interval = setInterval(() => {
+
+        progress++;
+
+        progressBar.style.width = `${progress}%`;
+        progressPercent.textContent = `${progress}%`;
+
+        const nextStage = stages[stageIndex];
+
+        if (
+            nextStage &&
+            progress >= nextStage.percent
+        ) {
+
+            loadingTitle.textContent = nextStage.title;
+            loadingText.textContent = nextStage.text;
+
+            stageIndex++;
+        }
+
+        if (progress >= 100) {
+
+            clearInterval(interval);
+
+            setTimeout(() => {
+
+                showResult(username);
+
+            }, 500);
+        }
+
+    }, 35);
+
 }
 
-function randomColor() {
-  const colors = ['#FFD700', '#FF5733', '#00FFCC', '#33FF57', '#3366FF', '#FF00FF'];
-  return colors[Math.floor(Math.random() * colors.length)];
+
+// ============================
+// SHOW RESULT
+// ============================
+
+function showResult(username) {
+
+    loadingPanel.classList.add("hidden");
+
+    resultPanel.classList.remove("hidden");
+
+    resultUsername.textContent = username;
+    resultAmount.textContent = currentAmount;
+
 }
 
-function clearEffects() {
-  document.querySelectorAll('.confetti').forEach(el => el.remove());
-}
+
+// ============================
+// RESET
+// ============================
+
+resetBtn.addEventListener("click", () => {
+
+    resultPanel.classList.add("hidden");
+
+    document.querySelector(".generator-card")
+        .classList.remove("hidden");
+
+    usernameInput.value = "";
+
+    usernameInput.focus();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+});
 
 
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-            .then(registration => {
-                console.log('Service Worker registrado:', registration.scope);
+// ============================
+// ONLINE COUNTER
+// ============================
+
+const onlineCount = document.getElementById("onlineCount");
+
+let usersOnline = 1284;
+
+setInterval(() => {
+
+    const change =
+        Math.random() > 0.5 ? 1 : -1;
+
+    usersOnline += change;
+
+    if (usersOnline < 1100) {
+        usersOnline = 1100;
+    }
+
+    onlineCount.textContent =
+        usersOnline.toLocaleString();
+
+}, 4000);
+
+
+// ============================
+// SERVICE WORKER
+// ============================
+
+if ("serviceWorker" in navigator) {
+
+    window.addEventListener("load", () => {
+
+        navigator.serviceWorker
+            .register("./sw.js")
+            .then(() => {
+                console.log("VPN Roblox SW activo");
             })
             .catch(error => {
-                console.error('Error registrando Service Worker:', error);
+                console.log(
+                    "Service Worker error:",
+                    error
+                );
             });
+
     });
+
 }

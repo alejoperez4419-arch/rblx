@@ -1,24 +1,22 @@
 {
-  "name": "VPN Roblox",
-  "short_name": "VPN Roblox",
-  "start_url": "/",
-  "scope": "/",
-  "display": "standalone",
-  "background_color": "#020b08",
-  "theme_color": "#020b08",
-  "orientation": "portrait",
-  "icons": [
-    {
-      "src": "logo.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "logo.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ]
+    "name": "VPN Roblox",
+    "short_name": "VPN Roblox",
+    "description": "VPN Roblox futuristic generator simulator.",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#050816",
+    "theme_color": "#050816",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "logo.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "logo.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
 }
